@@ -1,31 +1,45 @@
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, push, set, onValue, get } from 'firebase/database';
-import { getFirebaseConfig, getFirebaseConfig } from './firebase-config';
+import { getDatabase, ref, onValue, get } from 'firebase/database';
+import {  getFirebaseConfig } from './firebase-config';
 import { libroT } from './libros';
 
 const firebaseAppConfig = getFirebaseConfig();
 const firebaseApp = initializeApp(firebaseAppConfig);
 
+const db = getDatabase();
 const localstorage = window.localStorage;
 var userid = localstorage.getItem('id');
 const librosdiv = document.getElementById("librosDiv");
 
 function crearLibros(){
-    const db = getDatabase();
-    const librosRef = ref(db,'Libros');
-
+    
+    const librosRef = ref(db,'Libros/');
+    console.log(userid);
+ 
     onValue(librosRef,(snapshot)=>{
+        console.log("entro al onvalue");
         const datos = snapshot.val();
-        li
+        
+        
+        librosCont(datos);
     });
 }
 
 function librosCont(datos){
-    if(data){
+    if(datos){
         librosdiv.innerHTML = "";
         Object.keys(datos).forEach((k,i) => {
-            const conteiner = new libroT(datos, userid);
+            const Lref = ref(db,'Libros/'+k);
+          
+            onValue(Lref,(snapshot)=>{
+                const libro = snapshot.val();
+                const conteiner = new libroT(libro, userid,k);
+            console.log(libro.nombre);
             librosdiv.appendChild(conteiner.render());
+            })
+           
         });
     }
 }
+
+crearLibros();

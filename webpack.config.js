@@ -3,9 +3,11 @@ const path = require('path');
 module.exports = {
     mode: 'development',
     devtool: 'eval-source-map',
-    entry: './src/index.js',
+    entry: {
+        index: './src/index.js',
+        login: './src/login.js'
+    },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'main.js'
     }
 };
